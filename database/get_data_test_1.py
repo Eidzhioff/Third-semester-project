@@ -14,10 +14,10 @@ soup = BeautifulSoup(response.text, 'lxml')
 
 def get_pagination_limit():
     #Получить ссылку последней страницы (пока бесполезно, но мб пригодится)
-    pages_block = soup.find ("ul", class_="paginator-module__pages___1azUM")
+    pages_block = soup.find ("ul", class_="***")
     pages_container = pages_block.select("li")
     last_button = pages_container[-2]
-    last_button_2 = last_button.select_one("a", class_="base-module__base___7FUQ1 base-module__base-text____L6Jb base-module__button___3TuZj base-module__size-m___2sS92 paginator-button-module__paginator-button___20KL4")
+    last_button_2 = last_button.select_one("a", class_="***")
     last_href = last_button_2.get("href")
     #Получить номер последней страницы
     num_last_page = int(pages_block.text.split(".")[-1])
@@ -34,8 +34,8 @@ def get_page(page: int):
 
 def get_blocks(data_page):
     soup = BeautifulSoup(data_page.text, 'lxml')
-    soup_flats = soup.find ("ul", class_="OffersSearchList__list")
-    container = soup_flats.select ("li", class_="OffersSearchList__item")
+    soup_flats = soup.find ("ul", class_="***")
+    container = soup_flats.select ("li", class_="***")
     for item in container:
         parse_block(item)
         #print (item)
@@ -44,20 +44,20 @@ def parse_block(item):
     flag=False
     try:
         #инфа о квартире
-        brief_info_about_flat_text = item.find("div", class_ = "fonts-module__promo-subheader-alone___4BOzH fonts-module__bold___2Zct2").text
-        info_about_flat = item.find ("p", class_= "color-primitives-module__black-400___203En fonts-module__secondary-alone___3wVR-")
+        brief_info_about_flat_text = item.find("div", class_ = "***").text
+        info_about_flat = item.find ("p", class_= "***")
         #цена
-        price = item.find ("div", class_="LayoutSnippet__price")
-        price_for_meter = item.find("div", class_="OfferSnippet__price-detail")
+        price = item.find ("div", class_="***")
+        price_for_meter = item.find("div", class_="***")
         #метро и время до него
-        metro = item.find ("span", class_="colors-named-module__primary___3m87l fonts-module__primary___2PNSt SubwayStation__title")
-        time_to_the_station_metro= item.find("div", class_="color-primitives-module__black-400___203En fonts-module__primary___2PNSt")
+        metro = item.find ("span", class_="***")
+        time_to_the_station_metro= item.find("div", class_="***")
         #ссылка
-        url_block = item.select_one('div',class_='LayoutSnippet__title')
-        url_block_2 = url_block.select_one('a',class_='LinkSnippet LinkSnippet_hover')
+        url_block = item.select_one('div',class_='***')
+        url_block_2 = url_block.select_one('a',class_='***')
         href = url_block_2.get('href')
         #адрес 
-        address_block = item.find ("div", class_="ClClickableAddress__links")
+        address_block = item.find ("div", class_="***")
         address = ", ".join(address_block.text.split("•")[0].split(","))
         distance_to_center = address_block.text.split("•")[1].strip()
         flag=True
@@ -82,34 +82,34 @@ def parse_page (url):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'lxml')
 
-    block_description_all = soup.find_all ("div", class_="grid-module__container___39oIv grid-module__gap___2HbMS")
+    block_description_all = soup.find_all ("div", class_="***")
     
     block_description_apart = block_description_all[0]
-    blocks_apart = block_description_apart.find_all("div", class_="grid-module__cell___3uBi0")
+    blocks_apart = block_description_apart.find_all("div", class_="***")
 
     block_description_house = block_description_all[1]
-    blocks_house = block_description_house.find_all("div", class_="grid-module__cell___3uBi0")
+    blocks_house = block_description_house.find_all("div", class_="***")
     
     description_of_apartment={}
     description_of_house={}
     
     for block in blocks_apart:
-        key = (block.find ("div", class_="colors-named-module__secondary___2WPH_ fonts-module__secondary-alone___3wVR-"))
-        value = (block.find (class_="fonts-module__primary___2PNSt DescriptionCell__value"))
+        key = (block.find ("div", class_="***"))
+        value = (block.find (class_="***"))
         description_of_apartment[key.text]=value.text.replace(u'\xa0', u' ')
 
     for block in blocks_house:
-        key = (block.find ("div", class_="colors-named-module__secondary___2WPH_ fonts-module__secondary-alone___3wVR-"))
-        value = (block.find (class_="fonts-module__primary___2PNSt DescriptionCell__value"))
+        key = (block.find ("div", class_="***"))
+        value = (block.find (class_="***"))
         description_of_house[key.text]=value.text.replace(u'\xa0', u' ')
  
     print (f"\nОписание квартиры: {description_of_apartment}")
     print (f"Описание дома: {description_of_house}")
     try:
-        offerCard_content_block = soup.find ("div", class_="OfferCard__content")
-        views = (offerCard_content_block.find("div", class_="color-primitives-module__black-400___203En OfferStatView")).text
+        offerCard_content_block = soup.find ("div", class_="***")
+        views = (offerCard_content_block.find("div", class_="***")).text
         print (f"Просмотры: {views}")
-        date = (offerCard_content_block.find("div", class_="colors-named-module__secondary___2WPH_ OfferCard__lastUpdate")).text
+        date = (offerCard_content_block.find("div", class_="***")).text
         print (f"Дата публикации: {date}")
     except:
         None
@@ -118,11 +118,11 @@ def import_images(url):
     global num_folder, browser
 
     browser.get(url)
-    button_block = browser.find_elements(By.CLASS_NAME, 'GalleryOfferCard__btn')
+    button_block = browser.find_elements(By.CLASS_NAME, '***')
     try:
         button = button_block[-1]
         button.click()
-        container_images = browser.find_elements(By.CLASS_NAME,"GalleryDesktopPicture__image")
+        container_images = browser.find_elements(By.CLASS_NAME,"***")
         for item in container_images:
             image_link = item.get_attribute('src')
             print(image_link)
