@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 
 
-url = 'https://m2.ru/sankt-peterburg/nedvizhimost/kupit-kvartiru/'
+url = ''
 response = requests.get(url)
 #Весь код страницы 
 soup = BeautifulSoup(response.text, 'lxml')
