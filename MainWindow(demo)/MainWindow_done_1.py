@@ -486,10 +486,9 @@ class Ui_MainWindow(object):
                     cur.execute(f"{l}")
 
                     for i in cur:
-                        price=str('{0:,}'.format(int(i[2])).replace(",", "."))+"₽"
-                        stroka=[str(i[3]), f"Дата добавления объявления: {str(i[-1])}"]
-                        self.res[i[0]]= (str(i[1])+'\n'+ f" <b>{price} </b>" + "\n"+('\n'.join(stroka)))
-##                        self.res[i[0]]= (str(i[1])+'\n'+ f" <b>{price} </b>" + "\n"+('\n'.join(map(str, i[3:-1])))+'\n'+f"Дата добавления объявления: {str(i[-1])}")
+                        price=str('{0:,}'.format(int(i[2])).replace(",", "."))+" ₽"
+                        outputStr=[str(i[1]),f" <b>{price} </b>", str(i[3]), f"Дата добавления объявления: {str(i[-1])}"]
+                        self.res[i[0]]=('\n'.join(outputStr))
                     if self.res=={}:
                         eror2="Нет объявлений, удовлетволяющих заданным параметрам"
             except:
