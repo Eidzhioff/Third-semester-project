@@ -277,14 +277,15 @@ class Ui_MainWindow(object):
         self.label_3.setObjectName("label_3")
         self.gridLayout_TextRes.addWidget(self.label_3, 0, 0, 1, 1)
         self.comboBox = QtWidgets.QComboBox(self.groupBox_TextRes)
-        self.comboBox.setMinimumSize(QtCore.QSize(150, 10))
+        self.comboBox.setMinimumSize(QtCore.QSize(250, 10))
         self.comboBox.setMaximumSize(QtCore.QSize(0, 16777215))
         self.comboBox.setMouseTracking(False)
         self.comboBox.setEditable(False)
         self.comboBox.setObjectName("comboBox")
-        for i in range(3):
+        for i in range(4):
             self.comboBox.addItem("")
         self.comboBox.currentIndexChanged.connect(self.changeComboBox)
+        self.paramSort = "по ↑ цены"
         self.gridLayout_TextRes.addWidget(self.comboBox, 0, 1, 1, 1)
         self.gridLayout_Right_Column.addWidget(self.groupBox_TextRes, 0, 0, 1, 1)
         ##
@@ -348,7 +349,9 @@ class Ui_MainWindow(object):
         print(f"Group: {title}; objectName=`{obj.objectName()}`")
         
     def changeComboBox(self, index):
-        print (self.comboBox.itemText(index))
+        self.paramSort = self.comboBox.itemText(index)
+        print (self.paramSort)
+        self.export_res()
 
     def clear(self):
         print ("ТЕСТ ТЕСТ __________")
@@ -462,16 +465,31 @@ class Ui_MainWindow(object):
             self.res={}
             eror2=""
 
+            #["по ↑ цены","по ↓ цены", "по ↑ времени добавления", "по ↓ времени добавления"]
+            if "↑" in self.paramSort:
+                if "цены" in self.paramSort:
+                    orderStr= " ORDER BY cost_apart"
+                else:
+                    orderStr= " ORDER BY date"
+            else:
+                if "цены" in self.paramSort:
+                    orderStr= " ORDER BY cost_apart DESC"
+                else:
+                    orderStr= " ORDER BY date DESC"
+
             try:
                 with sq.connect("newdb.db") as con:
                     cur = con.cursor()
                 
-                    l = "SELECT rowid, new_apart, cost_apart, about_apart FROM apart WHERE " + result 
+                    l = "SELECT rowid, new_apart, cost_apart, about_apart, date FROM apart WHERE " + result + orderStr
                     print (l)
                     cur.execute(f"{l}")
 
                     for i in cur:
-                        self.res[i[0]]= ('\n'.join(map(str, i[1:])))
+                        price=str('{0:,}'.format(int(i[2])).replace(",", "."))+"₽"
+                        stroka=[str(i[3]), f"Дата добавления объявления: {str(i[-1])}"]
+                        self.res[i[0]]= (str(i[1])+'\n'+ f" <b>{price} </b>" + "\n"+('\n'.join(stroka)))
+##                        self.res[i[0]]= (str(i[1])+'\n'+ f" <b>{price} </b>" + "\n"+('\n'.join(map(str, i[3:-1])))+'\n'+f"Дата добавления объявления: {str(i[-1])}")
                     if self.res=={}:
                         eror2="Нет объявлений, удовлетволяющих заданным параметрам"
             except:
@@ -498,13 +516,13 @@ class Ui_MainWindow(object):
                 self.gridLayout_Results.addWidget(self.eror_Box, 0, 0, 1, 1)
 
 
-                print (self.eror_Grid)
+##                print (self.eror_Grid)
                 self.eror_Box.setTitle(_translate("MainWindow", "Ошибка"))
                 self.eror_Box.setStyleSheet("font: bold 10pt \"Century Gothic\";")
 
                 self.eror_Text.setHtml(_translate("MainWindow", eror2))
                 self.eror_Text.setStyleSheet("font: 75 9pt \"Century Gothic\";")
-                print (self.eror_Grid)
+##                print (self.eror_Grid)
 
                 self.namesBoxes=[]
                 self.namesGrids=[]
@@ -612,7 +630,7 @@ class Ui_MainWindow(object):
             v.setHtml(_translate("MainWindow",name))
 
         ##Параметры сортировки
-        self.namesComboBox = ["по ↑ цены","по ↓ цены", "по времени добавления" ]
+        self.namesComboBox = ["по ↑ цены","по ↓ цены", "по ↑ времени добавления", "по ↓ времени добавления"]
         for i, v in enumerate(self.namesComboBox):
             self.comboBox.setItemText(i,_translate("MainWindow", v))
         self.comboBox.setStyleSheet("font: 75 9pt \"Century Gothic\";")
@@ -622,8 +640,6 @@ class Ui_MainWindow(object):
 
         for i, v in enumerate(self.namesCheckBox_Rooms):
             v.setText(_translate("MainWindow", str(i+1) ))
-
-
 
 
 
